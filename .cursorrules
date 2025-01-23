@@ -1,0 +1,131 @@
+# CREDIT CARD VALIDATION PAGE RULES
+
+## PROJECT OVERVIEW
+
+- **Tech Stack**: React 19, TypeScript, Bootstrap CSS, React Router for navigation.
+- **Description**: A page for validating credit card information (card number, expiration date, CVV), along with an amount field. After the validation, the user is redirected to a confirmation page or next step.
+
+## CODE STYLE
+
+- **Naming**:
+  - Components: `PascalCase` (e.g., `CreditCardForm`).
+  - Variables/functions: `camelCase` (e.g., `validateCardNumber`).
+- **TypeScript**: Avoid `any` type. Use explicit types for props and state (e.g., `CardDetails`, `ValidationError`, `Amount`).
+
+## FORM FIELD VALIDATION
+
+- **Card Number**:
+  - Validate using the Luhn algorithm (e.g., check card number length, format).
+  - Provide error messages for invalid formats and length.
+- **Expiration Date**:
+  - Ensure it's a valid date (e.g., `MM/YY` format) and check that the date is in the future.
+- **CVV**:
+  - Validate that the CVV is exactly 3 digits for most cards (or 4 digits for American Express).
+- **Amount**:
+  - Ensure the amount is a valid number (positive value) and format it properly (e.g., `USD` format).
+  - If the amount is valid, proceed to the next step and redirect.
+
+## COMPONENT STRUCTURE
+
+- **Folder Structure**:
+  - Place components in `/src/components/` (e.g., `CreditCardForm.tsx`).
+  - Create utility functions (e.g., `validateCardNumber.ts`, `validateAmount.ts`) in `/src/utils/`.
+- **React Components**:
+  - Keep components small, focused, and reusable.
+  - Use controlled form components for managing input states.
+
+## REDIRECTION AFTER VALIDATION
+
+- **React Router**: Use `useHistory` (or `useNavigate` in React Router v6) to navigate to the next page after the form is validated.
+
+  - After successful validation of all fields (including amount), redirect to a confirmation or success page.
+  - Example:
+
+    ```tsx
+    import { useNavigate } from "react-router-dom";
+
+    const CreditCardForm = () => {
+      const navigate = useNavigate();
+
+      const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+
+        // Assuming validateAmount and validateCardNumber are functions that return true if valid
+        if (validateAmount(amount) && validateCardNumber(cardNumber)) {
+          // Redirect to success page or next step after validation
+          navigate("/success");
+        } else {
+          // Show error messages
+        }
+      };
+
+      return (
+        <form onSubmit={handleSubmit}>
+          {/* Form fields for card details */}
+          <input
+            type="text"
+            value={cardNumber}
+            onChange={handleCardNumberChange}
+          />
+          <input type="text" value={amount} onChange={handleAmountChange} />
+          <button type="submit">Submit</button>
+        </form>
+      );
+    };
+    ```
+
+## UI/UX
+
+- **Feedback**:
+  - Provide real-time validation feedback for each field (e.g., showing error message "Invalid card number" when the user types an incorrect card number).
+  - When the amount is valid, show a success message or visual cue to indicate that validation passed and the form can be submitted.
+- **Redirection**:
+  - After validation, redirect users smoothly to the next page (e.g., a confirmation or success page).
+  - Ensure the user is not redirected prematurely (e.g., before all fields are validated).
+
+## TOOLING & DEPENDENCY RULES
+
+- **Packages**:
+  - Do not add external validation libraries without approval (e.g., `react-credit-cards` or `validator.js`).
+  - Use lightweight, necessary libraries to avoid bloat.
+- **Security**:
+  - Never store full card details (card number, CVV) on the client side.
+  - Transmit all sensitive data over HTTPS, and ensure server-side validation is always performed.
+
+## AUTOMATING WORKFLOWS & HOUSEKEEPING
+
+- **Versioning**:
+  - Use semantic versioning for releases.
+  - Update `CHANGELOG.md` for new validation or redirection features.
+- **Unit Testing**:
+  - Write unit tests for validation functions (e.g., `validateCardNumber`, `validateAmount`).
+  - Use Jest and React Testing Library for component and form validation tests.
+
+## DEBUGGING & MAINTENANCE
+
+- **Issue Investigation**:
+  - Ensure validation errors are clearly logged.
+  - Test redirection functionality to ensure users are sent to the correct page after form submission.
+
+## CONTEXT INHERITANCE
+
+- **Context for UI/UX**: Refer to `currentTasks.md` for specific UI/UX updates regarding validation and redirection features.
+- **Ensure Data Integrity**: Always perform validation server-side and only store a tokenized version of the credit card information (if necessary).
+
+## DO'S vs DON'TS
+
+**Do**:
+
+- Always validate form data client-side and server-side.
+- Use **React controlled components** to manage form state.
+- After successful validation, **redirect** users to the confirmation or next step page using **React Router**.
+
+**Don't**:
+
+- Never redirect users prematurely (i.e., before all fields are validated).
+- Never store full card details or sensitive information on the frontend.
+
+## TESTING & VALIDATION
+
+- **Unit Tests**: Ensure that the form fields, validation logic, and redirection are covered with tests.
+- **Accessibility**: Ensure that form fields are accessible, focusable, and provide proper error messages for users.

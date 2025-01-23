@@ -1,0 +1,10 @@
+{
+  "validCards": [
+    {
+      "number": "4111111111111111",
+      "name": "John Doe",
+      "expiry": "12/25",
+      "cvv": "123"
+    }
+  ]
+}
